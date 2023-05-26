@@ -1,0 +1,96 @@
+version: '3'
+
+services:
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    ports:
+      - 5432
+    restart: always
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=connector
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=connectordb
+
+  connector:
+    container_name: connector
+    image: ghcr.io/international-data-spaces-association/dataspace-connector:8.0.2
+    ports:
+      - ${CONNECTOR_PORT}:8080
+    restart: always
+    depends_on:
+      - postgres
+    volumes:
+      - ./config.json:/config/config.json
+      - ./keystore.p12:/config/keystore.p12
+      - ./truststore.p12:/config/truststore.p12
+      - ./keystore_tls.p12:/config/keystore_tls.p12
+      - ./log4j2.xml:/app/log4j2.xml
+      - ./V8.0.2__releaseV8.0.2-fix.sql:/app/BOOT-INF/classes/db/migration/V8.0.2__releaseV8.0.2.sql
+    environment:
+      - CONFIGURATION_PATH=/config/config.json
+      - CONFIGURATION_FORCE_RELOAD=false
+
+      - DAPS_URL=https://${IDS_FQDN}
+      - DAPS_TOKEN_URL=https://${IDS_FQDN}/auth/token
+      - DAPS_KEY_URL=https://${IDS_FQDN}/auth/jwks.json
+      - DAPS_INCOMING_DAT_DEFAULT_WELLKNOWN=/jwks.json
+      - DAPS_ENABLE_LOG_JWT=true
+      - DAPS_JWT_SIGNATURE_ALGORITHM=ECDSA256
+      
+      - CONFIGURATION_KEYSTOREPASSWORD=${KEYSTORE_PASSWORD}
+      
+      - SPRING_SECURITY_USER_NAME=admin
+      - SPRING_SECURITY_USER_PASSWORD=${ADMIN_PASSWORD}
+      - SPRING_SECURITY_APP_NAME=app
+      - SPRING_SECURITY_APP_PASSWORD=${APP_PASSWORD}
+
+      - SERVER_SSL_ENABLED=true
+      - SERVER_SSL_KEY-STORE=file:///config/keystore_tls.p12
+      - SERVER_SSL_KEY-STORE-PASSWORD=${KEYSTORE_PASSWORD}
+
+      - JAVA_OPTIONS=-Djavax.net.debug=all
+      
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/connectordb
+      - SPRING_DATASOURCE_USERNAME=connector
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - SPRING_DATASOURCE_PLATFORM=postgres
+      - SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver
+      - SPRING_JPA_DATABASEPLATFORM=org.hibernate.dialect.PostgreSQLDialect
+      
+      - CAMEL_TRUSTSTORE_PATH=/config/truststore.p12
+      - SPRING_FLYWAY_ENABLED=true
+      - SPRING_FLYWAY_BASELINEVERSION=8.0.1
+      - SPRING_FLYWAY_BASELINEONMIGRATE=true
+      - SPRING_JPA_HIBERNATE_DDLAUTO=update
+      
+      - CLEARING_HOUSE_URL=https://tc-core:9999
+      - CLEARING_HOUSE_PATH_LOG=messages/log
+      - CLEARING_HOUSE_PATH_PROCESS=/process
+
+
+  connector-ui:
+    container_name: connector-ui
+    image: ghcr.io/international-data-spaces-association/dataspace-connector-ui
+    ports:
+      - ${CONNECTOR_UI_PORT}:8083
+    restart: always
+    environment:
+      - CONNECTOR_URL=https://${CONNECTOR_FQDN}:${CONNECTOR_PORT}
+      - CONNECTOR_USER=admin
+      - CONNECTOR_PASSWORD=${ADMIN_PASSWORD}
+      - BASIC_AUTH_USER=admin
+      - BASIC_AUTH_PASSWORD=${ADMIN_PASSWORD}
+
+volumes:
+  certbot-www:
+  certbot-conf:
+  broker-fuseki:
+  pgdata:
+  clh-ls-data:
+  clh-doc-data:
+  clh-kr-data:
+  vocab-fuseki:
