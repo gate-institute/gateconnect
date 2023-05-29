@@ -3,7 +3,6 @@ version: '3'
 services:
 
   postgres:
-    container_name: postgres
     image: postgres:latest
     ports:
       - 5432
@@ -16,7 +15,6 @@ services:
       - POSTGRES_DB=connectordb
 
   connector:
-    container_name: connector
     image: ghcr.io/international-data-spaces-association/dataspace-connector:8.0.2
     ports:
       - ${CONNECTOR_PORT}:8080
@@ -73,7 +71,6 @@ services:
 
 
   connector-ui:
-    container_name: connector-ui
     image: ghcr.io/international-data-spaces-association/dataspace-connector-ui
     ports:
       - ${CONNECTOR_UI_PORT}:8083
