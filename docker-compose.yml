@@ -50,7 +50,7 @@ services:
 
       - SERVER_SSL_ENABLED=true
       - SERVER_SSL_KEY-STORE=file:///config/keystore_tls.p12
-      - SERVER_SSL_KEY-STORE-PASSWORD=${KEYSTORE_PASSWORD}
+      - SERVER_SSL_KEY-STORE-PASSWORD=${TLS_KEYSTORE_PASSWORD}
 
       - JAVA_OPTIONS=-Djavax.net.debug=all
       
