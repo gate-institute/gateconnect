@@ -83,12 +83,16 @@ services:
       - BASIC_AUTH_USER=admin
       - BASIC_AUTH_PASSWORD=${ADMIN_PASSWORD}
 
+  portainer:
+    image: portainer/portainer-ce:latest
+    ports:
+      - 10444:9443
+    restart: always
+    volumes:
+      - portainer-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+      
+      
 volumes:
-  certbot-www:
-  certbot-conf:
-  broker-fuseki:
   pgdata:
-  clh-ls-data:
-  clh-doc-data:
-  clh-kr-data:
-  vocab-fuseki:
+  portainer-data:
