@@ -15,3 +15,5 @@ ALTER TABLE public.authentication ALTER COLUMN id SET DEFAULT nextval('authentic
 ALTER SEQUENCE authentication_id_seq OWNED BY public.authentication.id;
 
 SELECT setval('authentication_id_seq', COALESCE(max(id), 1)) FROM public.authentication;
+
+ALTER TABLE public.appstore ALTER COLUMN location TYPE varchar(2048);
