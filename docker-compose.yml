@@ -86,7 +86,7 @@ services:
   portainer:
     image: portainer/portainer-ce:latest
     ports:
-      - 10444:9443
+      - ${PORTAINER_PORT}:9443
     restart: always
     volumes:
       - portainer-data:/data
