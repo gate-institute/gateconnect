@@ -18,7 +18,6 @@ services:
     image: ghcr.io/gate-institute/dataspace-connector:8.0.2-G1
     ports:
       - ${CONNECTOR_PORT}:8080
-      - 8080:8000
     restart: always
     depends_on:
       - postgres
@@ -70,6 +69,11 @@ services:
       - CLEARING_HOUSE_PATH_LOG=messages/log
       - CLEARING_HOUSE_PATH_PROCESS=process
 
+      - PORTAINER_APPLICATION_SCHEME=https
+      - PORTAINER_APPLICATION_HOST=portainer
+      - PORTAINER_APPLICATION_PORT=${PORTAINER_PORT}
+      - PORTAINER_APPLICATION_USERNAME=admin
+      - PORTAINER_APPLICATION_PASSWORD=${PORTAINER_PASSWORD}
 
   connector-ui:
     image: ghcr.io/international-data-spaces-association/dataspace-connector-ui
