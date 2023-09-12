@@ -78,17 +78,33 @@ services:
       - PORTAINER_APPLICATION_PASSWORD=${PORTAINER_PASSWORD}
       - PORTAINER_APPLICATION_CONNECTOR_NETWORK=${CONTAINER_NETWORK}
       
-  connector-ui:
-    image: ghcr.io/international-data-spaces-association/dataspace-connector-ui
+  gateconnect-backend:
+    image: ghcr.io/gate-institute/gateconnect-backend:0.0.2
     ports:
-      - ${CONNECTOR_UI_PORT}:8083
+      - ${CONNECTOR_UI_BACKEND_PORT}:8080
     restart: always
+    volumes:
+      - ./keystore_tls.p12:/config/keystore_tls.p12
     environment:
-      - CONNECTOR_URL=https://${CONNECTOR_FQDN}:${CONNECTOR_PORT}
-      - CONNECTOR_USER=admin
-      - CONNECTOR_PASSWORD=${ADMIN_PASSWORD}
-      - BASIC_AUTH_USER=admin
-      - BASIC_AUTH_PASSWORD=${ADMIN_PASSWORD}
+      - SERVER_SSL_ENABLED=true
+      - SERVER_SSL_KEY-STORE=file:///config/keystore_tls.p12
+      - SERVER_SSL_KEY-STORE-PASSWORD=${TLS_KEYSTORE_PASSWORD}
+      - FRONTEND_ORIGIN=http://${CONNECTOR_FQDN}:${CONNECTOR_UI_PORT}
+      - DASHBOARD_USERNAME=admin
+      - DASHBOARD_PASSWORD=${ADMIN_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - GATECONNECT_ID=https://${CONNECTOR_FQDN}:${CONNECTOR_PORT}
+      - GATECONNECT_URL=https://${CONNECTOR_FQDN}:${CONNECTOR_PORT}
+      - GATECONNECT_USERNAME=admin
+      - GATECONNECT_PASSWORD=${ADMIN_PASSWORD}
+
+  gateconnect-dashboard:
+    image: ghcr.io/gate-institute/gateconnect-dashboard:0.0.7
+    ports:
+      - ${CONNECTOR_UI_PORT}:80
+    environment:
+      - BACKEND_ROOT=https://${CONNECTOR_FQDN}:${CONNECTOR_UI_BACKEND_PORT}
+    restart: always
 
   portainer:
     image: portainer/portainer-ce:latest
