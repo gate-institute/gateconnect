@@ -79,7 +79,7 @@ services:
       - PORTAINER_APPLICATION_CONNECTOR_NETWORK=${CONTAINER_NETWORK}
       
   gateconnect-backend:
-    image: ghcr.io/gate-institute/gateconnect-backend:0.0.2
+    image: ghcr.io/gate-institute/gateconnect-backend:0.0.3
     ports:
       - ${CONNECTOR_UI_BACKEND_PORT}:8080
     restart: always
@@ -99,7 +99,7 @@ services:
       - GATECONNECT_PASSWORD=${ADMIN_PASSWORD}
 
   gateconnect-dashboard:
-    image: ghcr.io/gate-institute/gateconnect-dashboard:0.0.7
+    image: ghcr.io/gate-institute/gateconnect-dashboard:0.0.8
     ports:
       - ${CONNECTOR_UI_PORT}:80
     environment:
