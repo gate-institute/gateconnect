@@ -13,7 +13,7 @@
   },
   "ids:connectorDescription" : {
     "@type" : "ids:BaseConnector",
-    "@id" : "https://pilotds-infra.gate-ai.eu:10443",
+    "@id" : "https://gateds-infra.gate-ai.eu:10443",
     "ids:publicKey": {
         "@type": "ids:PublicKey",
         "@id": "https://w3id.org/idsa/autogen/publicKey/78eb73a3-3a2a-4626-a0ff-631ab50a00f9",
@@ -41,9 +41,9 @@
     },
     "ids:hasDefaultEndpoint" : {
       "@type" : "ids:ConnectorEndpoint",
-      "@id" : "https://pilotds-infra.gate-ai.eu:10443/api/ids/data",
+      "@id" : "https://gateds-infra.gate-ai.eu:10443/api/ids/data",
       "ids:accessURL" : {
-        "@id" : "https://pilotds-infra.gate-ai.eu:10443/api/ids/data"
+        "@id" : "https://gateds-infra.gate-ai.eu:10443/api/ids/data"
       }
     },
     "ids:inboundModelVersion" : [ "4.0.0", "4.1.0", "4.1.2", "4.2.0", "4.2.1", "4.2.2", "4.2.3", "4.2.4", "4.2.5", "4.2.6", "4.2.7" ],

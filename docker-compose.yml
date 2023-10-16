@@ -67,7 +67,7 @@ services:
       - SPRING_FLYWAY_BASELINEONMIGRATE=true
       - SPRING_JPA_HIBERNATE_DDLAUTO=update
       
-      - CLEARING_HOUSE_URL=https://pilotds-infra.gate-ai.eu:9999
+      - CLEARING_HOUSE_URL=https://gateds-infra.gate-ai.eu:9999
       - CLEARING_HOUSE_PATH_LOG=messages/log
       - CLEARING_HOUSE_PATH_PROCESS=process
 
