@@ -15,7 +15,7 @@ services:
       - POSTGRES_DB=connectordb
 
   connector:
-    image: ghcr.io/gate-institute/dataspace-connector:8.0.2-G2
+    image: ghcr.io/gate-institute/dataspace-connector:8.0.2-G3
     ports:
       - ${CONNECTOR_PORT}:8080
       - 8080:5005
