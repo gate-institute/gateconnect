@@ -77,6 +77,8 @@ services:
       - PORTAINER_APPLICATION_USERNAME=admin
       - PORTAINER_APPLICATION_PASSWORD=${PORTAINER_PASSWORD}
       - PORTAINER_APPLICATION_CONNECTOR_NETWORK=${CONTAINER_NETWORK}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
       
   gateconnect-backend:
     image: ghcr.io/gate-institute/gateconnect-backend:0.0.5
@@ -125,3 +127,4 @@ services:
 volumes:
   pgdata:
   portainer-data:
+
