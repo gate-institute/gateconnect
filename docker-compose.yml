@@ -81,7 +81,7 @@ services:
       - "host.docker.internal:host-gateway"
       
   gateconnect-backend:
-    image: ghcr.io/gate-institute/gateconnect-backend:0.0.5
+    image: ghcr.io/gate-institute/gateconnect-backend:0.0.6
     ports:
       - ${CONNECTOR_UI_BACKEND_PORT}:8080
     restart: always
@@ -101,7 +101,7 @@ services:
       - GATECONNECT_PASSWORD=${ADMIN_PASSWORD}
 
   gateconnect-dashboard:
-    image: ghcr.io/gate-institute/gateconnect-dashboard:0.0.11
+    image: ghcr.io/gate-institute/gateconnect-dashboard:0.0.12
     ports:
       - ${CONNECTOR_UI_PORT}:443
     volumes:
