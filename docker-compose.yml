@@ -67,7 +67,7 @@ services:
       - SPRING_FLYWAY_BASELINEONMIGRATE=true
       - SPRING_JPA_HIBERNATE_DDLAUTO=update
       
-      - CLEARING_HOUSE_URL=https://gateds-infra.gate-ai.eu:9999
+      - CLEARING_HOUSE_URL=https://gateds-infra.gate-ai.eu/ch
       - CLEARING_HOUSE_PATH_LOG=messages/log
       - CLEARING_HOUSE_PATH_PROCESS=process
 
@@ -77,11 +77,15 @@ services:
       - PORTAINER_APPLICATION_USERNAME=admin
       - PORTAINER_APPLICATION_PASSWORD=${PORTAINER_PASSWORD}
       - PORTAINER_APPLICATION_CONNECTOR_NETWORK=${CONTAINER_NETWORK}
+
+      # - SPRING_JPA_SHOW-SQL=true
+      # - SPRING_JPA.PROPERTIES.HIBERNATE.FORMAT_SQL=true
+      
     extra_hosts:
       - "host.docker.internal:host-gateway"
       
   gateconnect-backend:
-    image: ghcr.io/gate-institute/gateconnect-backend:0.0.6
+    image: ghcr.io/gate-institute/gateconnect-backend:0.0.7
     ports:
       - ${CONNECTOR_UI_BACKEND_PORT}:8080
     restart: always
@@ -101,7 +105,7 @@ services:
       - GATECONNECT_PASSWORD=${ADMIN_PASSWORD}
 
   gateconnect-dashboard:
-    image: ghcr.io/gate-institute/gateconnect-dashboard:0.0.13
+    image: ghcr.io/gate-institute/gateconnect-dashboard:0.0.14
     ports:
       - ${CONNECTOR_UI_PORT}:443
     volumes:
