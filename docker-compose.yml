@@ -105,7 +105,7 @@ services:
       - GATECONNECT_PASSWORD=${ADMIN_PASSWORD}
 
   gateconnect-dashboard:
-    image: ghcr.io/gate-institute/gateconnect-dashboard:0.0.17
+    image: ghcr.io/gate-institute/gateconnect-dashboard:0.0.18
     ports:
       - ${CONNECTOR_UI_PORT}:443
     volumes:
