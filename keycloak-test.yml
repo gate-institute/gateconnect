@@ -1,0 +1,41 @@
+version: '3.6'
+
+services:
+  keycloak_web:
+    image: quay.io/keycloak/keycloak:23.0.7
+    container_name: keycloak_web
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloakdb:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+      KC_HOSTNAME_STRICT: false
+      KC_LOG_LEVEL: info
+      KC_METRICS_ENABLED: true
+      KC_HEALTH_ENABLED: true
+      KEYCLOAK_PRODUCTION: true  
+      KC_HTTP_ENABLED: true
+      KEYCLOAK_ENABLE_TLS: true
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin      
+    command: "-v start --import-realm --https-key-store-file=/opt/keycloak/data/certs/keycloak.server.keystore.p12 --https-key-store-password=bjhv4288"
+    depends_on:
+      - keycloakdb
+    ports:
+      - 8009:8443
+      - 8008:8080
+    volumes:
+      - ./keycloak/realms:/opt/keycloak/data/import
+      - ./keystore_tls.p12:/opt/keycloak/data/certs/keycloak.server.keystore.p12
+
+  keycloakdb:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+
+volumes:
+  postgres_data:
