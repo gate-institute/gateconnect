@@ -1,7 +1,6 @@
 version: '3'
 
 services:
-
   postgres:
     image: postgres:latest
     ports:
@@ -14,10 +13,47 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=connectordb
 
-  connector:
-    image: ghcr.io/gate-institute/dataspace-connector:8.0.2-G3
+  keycloakdb:
+    image: postgres:latest
     ports:
-      - ${CONNECTOR_PORT}:8080
+      - 5433:5432    
+    volumes:
+      - pgdata_keycloak:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+  keycloak_web:
+    image: quay.io/keycloak/keycloak:23.0.7
+    container_name: keycloak_web
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloakdb:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KC_HOSTNAME_STRICT: false
+      KC_LOG_LEVEL: info
+      KC_METRICS_ENABLED: true
+      KC_HEALTH_ENABLED: true
+      KEYCLOAK_PRODUCTION: true  
+      KC_HTTP_ENABLED: true
+      KEYCLOAK_ENABLE_TLS: true
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: ${ADMIN_PASSWORD}      
+    command: "-v start --import-realm --https-key-store-file=/opt/keycloak/data/certs/keycloak.server.keystore.p12 --https-key-store-password=${TLS_KEYSTORE_PASSWORD}"
+    depends_on:
+      - keycloakdb
+    ports:
+      - ${KEYCLOAK_PORT}:8443
+    volumes:
+      - ./keycloak/realms:/opt/keycloak/data/import
+      - ./keystore-tls.p12:/opt/keycloak/data/certs/keycloak.server.keystore.p12      
+
+  connector:
+    image: ghcr.io/gate-institute/dataspace-connector:8.0.2-G4
+    ports:
+      - ${CONNECTOR_PORT}:8081
       - 8080:5005
     restart: always
     depends_on:
@@ -77,7 +113,8 @@ services:
       - PORTAINER_APPLICATION_USERNAME=admin
       - PORTAINER_APPLICATION_PASSWORD=${PORTAINER_PASSWORD}
       - PORTAINER_APPLICATION_CONNECTOR_NETWORK=${CONTAINER_NETWORK}
-
+      - KEYCLOAK_SECRET=${KEYCLOAK_SECRET}
+      - KEYCLOAK_ROOT=https://${CONNECTOR_FQDN}:${KEYCLOAK_PORT}
       # - SPRING_JPA_SHOW-SQL=true
       # - SPRING_JPA.PROPERTIES.HIBERNATE.FORMAT_SQL=true
       
@@ -85,7 +122,7 @@ services:
       - "host.docker.internal:host-gateway"
       
   gateconnect-backend:
-    image: ghcr.io/gate-institute/gateconnect-backend:0.0.10
+    image: ghcr.io/gate-institute/gateconnect-backend:0.0.12
     ports:
       - ${CONNECTOR_UI_BACKEND_PORT}:8080
     restart: always
@@ -98,7 +135,8 @@ services:
       - FRONTEND_ORIGIN=https://${CONNECTOR_FQDN}:${CONNECTOR_UI_PORT}
       - DASHBOARD_USERNAME=admin
       - DASHBOARD_PASSWORD=${ADMIN_PASSWORD}
-      - JWT_SECRET=${JWT_SECRET}
+      - KEYCLOAK_SECRET=${KEYCLOAK_SECRET}
+      - KEYCLOAK_ROOT=https://${CONNECTOR_FQDN}:${KEYCLOAK_PORT}
       - GATECONNECT_ID=https://${CONNECTOR_FQDN}:${CONNECTOR_PORT}
       - GATECONNECT_URL=https://${CONNECTOR_FQDN}:${CONNECTOR_PORT}
       - GATECONNECT_USERNAME=admin
@@ -131,4 +169,5 @@ services:
 volumes:
   pgdata:
   portainer-data:
+  pgdata_keycloak:
 
