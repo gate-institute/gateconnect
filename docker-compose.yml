@@ -53,7 +53,7 @@ services:
       - "${CONNECTOR_FQDN}:host-gateway"        
 
   connector:
-    image: ghcr.io/gate-institute/dataspace-connector:8.0.2-G4
+    image: ghcr.io/gate-institute/dataspace-connector:8.0.2-G5
     ports:
       - ${CONNECTOR_PORT}:8081
       - 8080:5005
@@ -119,8 +119,6 @@ services:
       - KEYCLOAK_ROOT=https://${CONNECTOR_FQDN}:${KEYCLOAK_PORT}
       # - SPRING_JPA_SHOW-SQL=true
       # - SPRING_JPA.PROPERTIES.HIBERNATE.FORMAT_SQL=true      
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
       
   gateconnect-backend:
     image: ghcr.io/gate-institute/gateconnect-backend:0.0.12
