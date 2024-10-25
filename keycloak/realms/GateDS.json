@@ -692,6 +692,7 @@
       "frontchannelLogout": true,
       "protocol": "openid-connect",
       "attributes": {
+        "access.token.lifespan": "43200",
         "client.secret.creation.time": "1716905170",
         "post.logout.redirect.uris": "*",
         "oauth2.device.authorization.grant.enabled": "false",
